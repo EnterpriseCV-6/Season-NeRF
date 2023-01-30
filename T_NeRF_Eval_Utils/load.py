@@ -483,10 +483,10 @@ def show_indiv_img_Results(Results, path, show_instead_of_save = False):
             c2 += 1
 
 def load_results_2(arg_dict):
-    fin = open(arg_dict["Log_File"] + "/" + arg_dict["Exp_Name"] + "/Analysis.pickle", "rb")
+    fin = open(arg_dict.logs_dir + "/Analysis.pickle", "rb")#open(arg_dict["Log_File"] + "/" + arg_dict["Exp_Name"] + "/Analysis.pickle", "rb")
     Results:dict = pickle.load(fin)
     fin.close()
-    path = arg_dict["Log_File"] + "/" + arg_dict["Exp_Name"] + "/Output"
+    path = arg_dict.logs_dir + "/Output" #arg_dict["Log_File"] + "/" + arg_dict["Exp_Name"] + "/Output"
     try:
         os.mkdir(path)
     except:

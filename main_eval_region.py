@@ -4,23 +4,23 @@ from Generate_Summary_Images import gen_angle_images, show_proto_images
 import T_NeRF_Eval_Utils as evals
 import numpy as np
 import pickle
-from T_NeRF_Full_2.mg_eval import load_from_input_dict
+from T_NeRF_Full_2.mg_eval import load_from_input_args
 import os
 
-def regional_eval(input_dict, output_loc, quick_mode = True):
+def regional_eval(args, output_loc, quick_mode = True):
     try:
         os.mkdir(output_loc)
     except:
         print("Warning: output directory", output_loc, "already exists!")
 
-    use_classic_solar = input_dict["Solar_Loss_Type_2"]
+    use_classic_solar = args.Solar_Type_2#input_dict["Solar_Loss_Type_2"]
 
 
-    fout = open(output_loc + "/Input_Dict.pickle", "wb")
-    pickle.dump(input_dict, fout)
-    fout.close()
+    # fout = open(output_loc + "/Input_Dict.pickle", "wb")
+    # pickle.dump(input_dict, fout)
+    # fout.close()
 
-    P_imgs, a_t_nerf, image_builder, bounds_LLA, GT_DSM, training_DSM, testing_imgs, device = load_from_input_dict(input_dict)
+    P_imgs, a_t_nerf, image_builder, bounds_LLA, GT_DSM, training_DSM, testing_imgs, device = load_from_input_args(args)
     testing_idx = []
     training_idx = []
     for i in range(len(P_imgs)):
@@ -123,6 +123,11 @@ def regional_eval(input_dict, output_loc, quick_mode = True):
 
 
 def multi_region_merge(path_to_data, indiv_data_loc, output_dir_name):
+    temp = path_to_data.split("/")
+    path_to_data = ""
+    for i in range(len(temp)-1):
+        path_to_data = path_to_data + temp[i] + "/"
+    path_to_data = path_to_data[0:-1]
     print(path_to_data)
     print(indiv_data_loc)
     print(os.listdir(path_to_data))
@@ -142,12 +147,14 @@ def multi_region_merge(path_to_data, indiv_data_loc, output_dir_name):
     [print(valid_areas[i].split("/")[-2]) for i in range(len(valid_areas))]
 
     # evals.merge_season_walk(valid_areas, output_path)
+
     evals.merge_area_overviews(valid_areas, output_path)
 
     evals.merge_HMs(valid_areas, output_path)
     evals.merge_imgs(valid_areas, output_path)
     evals.merge_imgs_shadows(valid_areas, output_path)
     evals.merge_seasons(valid_areas, output_path)
+    print("DONE")
 
 def multi_season_merge(path_to_data, indiv_data_loc, output_dir_name):
     print(path_to_data)

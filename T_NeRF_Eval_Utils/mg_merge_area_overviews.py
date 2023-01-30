@@ -7,10 +7,9 @@ from matplotlib import gridspec
 import T_NeRF_Full_2
 from all_NeRF import CV_reshape
 from all_NeRF import show_dict_struc
+from misc import load_args_from_json
 
 def merge_area_overviews(valid_areas, output_path):
-    print(valid_areas)
-
     col_labels = ["A", "B", "C"]
     row_labels = []
     imgs = []
@@ -20,13 +19,18 @@ def merge_area_overviews(valid_areas, output_path):
     out_table = [["\\text{Area Index}", "\\text{Num. Imgs.}", "\\text{Alt. Bounds (m)}"]]
     max_dpi = 100
     for a_valid_area in valid_areas:
-        if os.path.exists(a_valid_area + "/Input_Dict.pickle") and os.path.exists(a_valid_area + "/Img_Summary.pickle"):
+        print(a_valid_area)
+        temp_area = ""
+        for i in range(len(a_valid_area.split("/"))-1):
+            temp_area = temp_area + a_valid_area.split("/")[i] + "/"
+        temp_area += "opts.json"
+        if os.path.exists(temp_area) and os.path.exists(a_valid_area + "/Img_Summary.pickle"):
             area_name = a_valid_area.split("/")[-2].replace("_", " ")
             try:
-                fin = open(a_valid_area + "/Input_Dict.pickle", "rb")
-                input_dict = pickle.load(fin)
-                fin.close()
-                P_imgs, a_t_nerf, image_builder, bounds_LLA, GT_DSM, training_DSM, testing_imgs, device = T_NeRF_Full_2.load_from_input_dict(input_dict)
+
+                args = load_args_from_json(temp_area)
+
+                P_imgs, a_t_nerf, image_builder, bounds_LLA, GT_DSM, training_DSM, testing_imgs, device = T_NeRF_Full_2.load_from_input_args(args)
                 print(testing_imgs)
                 out_table.append(["\\text{" + area_name + "}", str(len(P_imgs)), str(bounds_LLA[2,1] - bounds_LLA[2,0])])
 

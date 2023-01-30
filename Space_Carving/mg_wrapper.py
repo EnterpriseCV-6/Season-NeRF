@@ -16,7 +16,7 @@ def get_DSM_SC(args, device, force_build = False):
     if exists(file_name) and force_build == False:
         hm = np.load(file_name)
     else:
-        filler = "_Refined" if args.use_Bundle_Adjust else ""
+        filler = "_Refined" if args.skip_Bundle_Adjust == False else ""
         fin = open(args.cache_dir + "/P_imgs_" + args.camera_model + filler + ".pickle", "rb")
         all_P_imgs = pickle.load(fin)
         fin.close()
@@ -31,6 +31,7 @@ def get_DSM_SC(args, device, force_build = False):
         for a_P_img in all_P_imgs:
             if a_P_img.img_name in name_list:
                 training_P_imgs.append(a_P_img)
+        print("Running Space Carving, warning this may take some time!")
         score_map = SC(training_P_imgs, bounds_LLA, device)
         np.save(args.cache_dir + "/Full_Scores_" + args.camera_model + filler + ".npy", score_map)
         hm = energy_min_H_map(score_map, start=0, end=-1, h=1 / 3) * 2 - 1

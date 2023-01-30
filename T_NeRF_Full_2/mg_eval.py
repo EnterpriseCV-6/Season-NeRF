@@ -13,19 +13,19 @@ from all_NeRF.basic_functions import show_dict_struc
 import Generate_Summary_Images
 import os
 
-def eval_T_NeRF(input_dict):
+def eval_T_NeRF(args):
     device = t.device("cuda:0" if t.cuda.is_available() else "cpu")
-    args = get_opts(exp_Name=input_dict["Exp_Name"],
-                    region=input_dict["Region"],
-                    num_time_class=input_dict["Time_Classes"],
-                    use_type_2_solar=input_dict["Solar_Loss_Type_2"],
-                    use_reg=input_dict["Reg_Terms"],
-                    use_prior=not input_dict["Skip_Prior_Start"],
-                    use_solar=not input_dict["Ignore_Solar"],
-                    use_time=not input_dict["Ignore_Time"],
-                    log_loc=input_dict["Log_File"],
-                    use_MSE_loss=input_dict["MSE_Loss"],
-                    force_write_json=False)
+    # args = get_opts(exp_Name=input_dict["Exp_Name"],
+    #                 region=input_dict["Region"],
+    #                 num_time_class=input_dict["Time_Classes"],
+    #                 use_type_2_solar=input_dict["Solar_Loss_Type_2"],
+    #                 use_reg=input_dict["Reg_Terms"],
+    #                 use_prior=not input_dict["Skip_Prior_Start"],
+    #                 use_solar=not input_dict["Ignore_Solar"],
+    #                 use_time=not input_dict["Ignore_Time"],
+    #                 log_loc=input_dict["Log_File"],
+    #                 use_MSE_loss=input_dict["MSE_Loss"],
+    #                 force_write_json=False)
 
 
     full_ans = {}
@@ -33,7 +33,7 @@ def eval_T_NeRF(input_dict):
     a_t_nerf.eval()
     a_t_nerf = a_t_nerf.to(device)
 
-    if args.use_Bundle_Adjust:
+    if args.skip_Bundle_Adjust == False:
         refined = "_Refined"
     else:
         refined = ""
@@ -57,7 +57,7 @@ def eval_T_NeRF(input_dict):
 
     training_DSM, GT_DSM = get_DSM(args, device=device)
 
-    if args.use_Bundle_Adjust:
+    if args.skip_Bundle_Adjust == False:
         refined = "_Refined"
     else:
         refined = ""
@@ -71,7 +71,7 @@ def eval_T_NeRF(input_dict):
     pickle.dump(full_ans, fout)
     fout.close()
 
-    if args.use_Bundle_Adjust:
+    if args.skip_Bundle_Adjust == False:
         refined = "_Refined"
     else:
         refined = ""
@@ -126,10 +126,10 @@ def eval_T_NeRF(input_dict):
     for i in tqdm(indx):
         a_P_img = P_imgs[i]
 
-        img_dict, scores, sat_form_data = full_eval_P_img(a_t_nerf, a_P_img, args.n_samples + args.n_importance, device, step_size = 4, max_batch_size = 100000, bounds=bounds_LLA, use_classic_solar=input_dict["Solar_Loss_Type_2"])
+        img_dict, scores, sat_form_data = full_eval_P_img(a_t_nerf, a_P_img, args.n_samples + args.n_importance, device, step_size = 4, max_batch_size = 100000, bounds=bounds_LLA, use_classic_solar=args.Solar_Type_2)
         if c == 1:
-            Time_Results = eval_season_walk(a_t_nerf, a_P_img, encoded_times, device, [128, 128, args.n_samples], args.use_HSLuv, input_dict["Solar_Loss_Type_2"])
-            Solar_Results = eval_solar_walk(a_t_nerf, a_P_img, full_sun_list, device, [128, 128, args.n_samples], args.use_HSLuv, input_dict["Solar_Loss_Type_2"])
+            Time_Results = eval_season_walk(a_t_nerf, a_P_img, encoded_times, device, [128, 128, args.n_samples], args.use_HSLuv, args.Solar_Type_2)
+            Solar_Results = eval_solar_walk(a_t_nerf, a_P_img, full_sun_list, device, [128, 128, args.n_samples], args.use_HSLuv, args.Solar_Type_2)
             a_ans = {"Is_Testing_Img": (a_P_img.img_name in testing_imgs), "Imgs": img_dict, "Scores": scores, "Solar_Results":Solar_Results, "Time_Results":Time_Results}
         else:
             a_ans = {"Is_Testing_Img":(a_P_img.img_name in testing_imgs), "Imgs":img_dict, "Scores":scores}
@@ -143,6 +143,35 @@ def eval_T_NeRF(input_dict):
         pickle.dump(sat_form_data, fout)
         fout.close()
         c += 1
+
+
+def load_from_input_args(args):
+    device = t.device("cuda:0" if t.cuda.is_available() else "cpu")
+    a_t_nerf, testing_imgs = load_t_nerf(args)
+    a_t_nerf.eval()
+    a_t_nerf = a_t_nerf.to(device)
+
+    if args.skip_Bundle_Adjust == False:
+        refined = "_Refined"
+    else:
+        refined = ""
+
+    fin = open(args.cache_dir + "/P_imgs_" + args.camera_model + refined + ".pickle", "rb")
+    P_imgs = pickle.load(fin)
+    fin.close()
+
+    training_DSM, GT_DSM = get_DSM(args, device=device)
+
+    if args.skip_Bundle_Adjust == False:
+        refined = "_Refined"
+    else:
+        refined = ""
+    bounds_LLA = np.load(args.cache_dir + "/bounds_LLA" + refined + ".npy")
+
+    image_builder = Quick_Run.Quick_Run_Net(a_t_nerf, args, P_imgs[0].get_world_center(), P_imgs[0].S, device,
+                                            use_tqdm=False, use_full_solar=False)
+    return P_imgs, a_t_nerf, image_builder, bounds_LLA, GT_DSM, training_DSM, testing_imgs, device
+
 
 def load_from_input_dict(input_dict):
     device = t.device("cuda:0" if t.cuda.is_available() else "cpu")

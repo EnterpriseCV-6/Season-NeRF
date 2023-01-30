@@ -9,7 +9,7 @@ def check_cache(args):
     print("Checking cache for P_imgs and bounds...")
 
     path_head = args.cache_dir
-    if args.use_Bundle_Adjust:
+    if args.skip_Bundle_Adjust == False:
         refined = "_Refined"
     else:
         refined = ""
@@ -36,6 +36,7 @@ def run_pre_NeRF(args):
         #Use DSM to get height range of area, if DSM is not available use supplied min and max height
         if args.gt_dir is not None:
             geotiff = gdal.Open(args.gt_dir + "/" + args.site_name + "_DSM.tif")
+            print(args.gt_dir + "/" + args.site_name + "_DSM.tif")
             img = geotiff.ReadAsArray()
             img[img == -9999.] = np.NaN
             #Increase Area by five meters to ensure fit
@@ -46,7 +47,7 @@ def run_pre_NeRF(args):
             max_h = args.max_height
 
         name = args.site_name[0:3]
-        if args.use_Bundle_Adjust:
+        if args.skip_Bundle_Adjust == False:
             in_cache = True
             for a_sat_img in sat_img_list:
                 if exists(args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_corrected.ikono") == False and \
@@ -55,6 +56,10 @@ def run_pre_NeRF(args):
                     in_cache = False
                     break
             if in_cache == False:
+                print("Error: Unable to run Bundle Adjustment!")
+                print("Please make sure adjusted RPCs are already in cache OR")
+                print("Please use arg --skip_Bundle_Adjust.")
+                exit()
                 pre_NeRF.run_wrapper(sat_img_list, args.cache_dir, tiePtsSet_file=None, flagUseSavedTiePts=False,
                                      the_imdDir=None, config_file="./BA_config.json")
             else:
@@ -110,7 +115,7 @@ def run_pre_NeRF(args):
                 min_e_r = min(min_e, min_e_r)
                 max_e_r = max(max_e_r, max_e)
             c_type = "RPC"
-        if args.use_Bundle_Adjust:
+        if args.skip_Bundle_Adjust == False:
             refined =  "_Refined"
         else:
             refined = ""

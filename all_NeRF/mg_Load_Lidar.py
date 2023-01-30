@@ -9,7 +9,7 @@ def get_GT_DSM(args, output_resolution):
     DEM_file = DEM_folder + DEM_file2
     UTM_file = DEM_file[0:-3] + "txt"
 
-    filler = "_Refined" if args.use_Bundle_Adjust else ""
+    filler = "_Refined" if args.skip_Bundle_Adjust == False else ""
 
     world_bounds = np.load(args.cache_dir + "/bounds_LLA" + filler + ".npy")
     GT = build_ground_truth_UTM(DEM_file, output_resolution, world_bounds, UTM_file)

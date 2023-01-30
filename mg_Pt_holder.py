@@ -109,7 +109,7 @@ def weight_Xs_v2(X, starts, ends, circle, sigma = None):
 def setup_quick_loader(args, bounds_model = np.array([[-1.,1], [-1,1], [-1,1]])):
     camera_name = args.camera_model
     cache_path = args.cache_dir
-    if args.use_Bundle_Adjust == True:
+    if args.skip_Bundle_Adjust == False:
         camera_name += "_Refined"
 
     fin = open(args.cache_dir + "/P_imgs_" + camera_name + ".pickle", "rb")

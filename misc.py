@@ -6,7 +6,18 @@ from torch.utils.data.sampler import WeightedRandomSampler
 import numpy as np
 import math
 import scipy.stats
+import json
 
+
+from collections import namedtuple
+def ArgDecoder(args_dict):
+    return namedtuple('X', args_dict.keys())(*args_dict.values())
+
+def load_args_from_json(json_file_loc):
+    fin = open(json_file_loc, "r")
+    args = json.load(fin, object_hook=ArgDecoder)
+    fin.close()
+    return args
 
 def lat_lon_to_meters(lat1, lon1, lat2, lon2):
     R = 6378.137 # Radius of earth in KM

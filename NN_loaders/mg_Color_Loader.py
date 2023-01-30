@@ -9,7 +9,7 @@ import hsluv
 def setup_col_loader(img_list, args, include_ortho, train_mode):
     camera_name = args.camera_model
     cache_path = args.cache_dir
-    if args.use_Bundle_Adjust == True:
+    if args.skip_Bundle_Adjust == False:
         camera_name += "_Refined"
     img_shape = (1,1,1)
 

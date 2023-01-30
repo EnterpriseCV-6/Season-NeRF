@@ -14,37 +14,46 @@ def get_opts(loaded_args = None, exp_Name = None, region = None, num_time_class 
     parser = argparse.ArgumentParser()
 
     # input paths
+    #default="OMA_248"
     if region is None:
-        parser.add_argument('--site_name', type=str, required=False, default="OMA_248",
+        parser.add_argument('--site_name', type=str, required=True,
         help="Name of area to perform tests on")
     else:
         parser.add_argument('--site_name', type=str, required=False, default=region,
                         help="Name of area to perform tests on")
-    parser.add_argument('--root_dir', type=str, required=False, default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Images",
-                        help='root directory of the input dataset')
-    parser.add_argument('--rpc_dir', type=str, default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Track3-Metadata",
-                        help='Directory where the RPCs are located (if different than root_dir)')
+    #default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Images",
+    parser.add_argument('--root_dir', type=str, required=True, help='root directory of the input dataset')
+    #default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Track3-Metadata",
+    parser.add_argument('--rpc_dir', type=str, required=False, help='Directory where the Corrected RPCs are located')
     parser.add_argument("--ckpts_dir", type=str, default="ckpts",
                         help="output directory to save trained models")
-    # parser.add_argument("--logs_dir", type=str, default="logs",
-    #                     help="output directory to save experiment logs")
+    #default = "/mnt/cloudNAS2/Michael/Home/Public_Pycharm_Output/NeRF_SC_v3/logs"
     if log_loc is None:
-        parser.add_argument("--logs_dir", type=str, default="/mnt/cloudNAS2/Michael/Home/Public_Pycharm_Output/NeRF_SC_v3/logs",
-                            help="output directory to save experiment logs")
+        parser.add_argument("--logs_dir", type=str, required=True, help="output directory to save experiment logs")
     else:
         parser.add_argument("--logs_dir", type=str,
                             default=log_loc,
                             help="output directory to save experiment logs")
-    parser.add_argument('--gt_dir', type=str, default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Images",
-                        help='directory where the ground truth DSM is located (if available)')
+    #default="/mnt/cloudNAS3/Michael_CN3/Home/Documents/Sat_Imgs/IEEE_Data/Images"
+    parser.add_argument('--gt_dir', type=str, required=True, help='directory where the ground truth DSM is located (if available)')
+    #default="/mnt/cloudNAS3/Michael_CN3/Home/Pycharm_Projects/NeRF_SC_v3/Cache",
+    parser.add_argument('--cache_dir', type=str, required=True, help='directory where cache for the current dataset is found, should already exist and contain the correct RPCs.')
+    #default="TEST"
+    if exp_Name is None:
+        # other basic stuff and dataset options
+        parser.add_argument("--exp_name", type=str, required=True, help="experiment name")
+    else:
+        # other basic stuff and dataset options
+        parser.add_argument("--exp_name", type=str, default=exp_Name,
+                            help="experiment name")
+
+
     parser.add_argument('--min_height', type=float, default=None,
                         help="Minimum height of region (only needed if GT not provided)")
     parser.add_argument('--max_height', type=float, default=None,
                         help="Maximum height of region (only needed if GT not provided)")
     # parser.add_argument('--cache_dir', type=str, default="./Cache",
     #                     help='directory where cache for the current dataset is found')
-    parser.add_argument('--cache_dir', type=str, default="/mnt/cloudNAS3/Michael_CN3/Home/Pycharm_Projects/NeRF_SC_v3/Cache",
-                        help='directory where cache for the current dataset is found')
     parser.add_argument('--use_Bundle_Adjust', action="store_true", default=True,
                         help="Apply Bundle Adjustment to Satellite Images")
     parser.add_argument('--DSM_Mode', type=str, default="Space_Carve", choices=["Space_Carve", "Stereo", "LiDAR", "None"],
@@ -55,15 +64,6 @@ def get_opts(loaded_args = None, exp_Name = None, region = None, num_time_class 
                         help="Optional Argument to give the location of file containing the names of the images reserved for testing, will override testing_size argument!")
     # parser.add_argument("--ckpt_path", type=str, default=None,
     #                     help="pretrained checkpoint path to load")
-
-    if exp_Name is None:
-        # other basic stuff and dataset options
-        parser.add_argument("--exp_name", type=str, default="TEST",
-                            help="experiment name")
-    else:
-        # other basic stuff and dataset options
-        parser.add_argument("--exp_name", type=str, default=exp_Name,
-                            help="experiment name")
     # parser.add_argument('--data', type=str, default='sat', choices=['sat', 'blender'],
     #                     help='type of dataset')
     parser.add_argument("--model", type=str, default="t-nerf", choices=["g-nerf", "t-nerf"],
