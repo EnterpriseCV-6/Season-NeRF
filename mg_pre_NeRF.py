@@ -1,9 +1,12 @@
 import pre_NeRF
 import gdal
 import numpy as np
-from lego_rvl.rpc.rpc import RPC_py as RPC
+# from lego_rvl.rpc.rpc import RPC_py as RPC
 import pickle
 from os.path import exists
+import rpcm
+
+USE_RPCM = True
 
 def check_cache(args):
     print("Checking cache for P_imgs and bounds...")
@@ -60,19 +63,28 @@ def run_pre_NeRF(args):
                 print("Please make sure adjusted RPCs are already in cache OR")
                 print("Please use arg --skip_Bundle_Adjust.")
                 exit()
-                pre_NeRF.run_wrapper(sat_img_list, args.cache_dir, tiePtsSet_file=None, flagUseSavedTiePts=False,
-                                     the_imdDir=None, config_file="./BA_config.json")
+                # pre_NeRF.run_wrapper(sat_img_list, args.cache_dir, tiePtsSet_file=None, flagUseSavedTiePts=False,
+                #                      the_imdDir=None, config_file="./BA_config.json")
             else:
                 print("Found cached RPCs, bundle adjustment not needed.")
             for a_sat_img in sat_img_list:
                 id = a_sat_img.img_name[9:11]
                 if exists(args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_corrected.ikono"):
-                    corrected_RPC = RPC().from_file(args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_corrected.ikono", args.rpc_dir + "/" + name + "/" + id + ".IMD")
+                    if USE_RPCM:
+                        corrected_RPC = rpcm.rpc_from_rpc_file(args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_corrected.ikono")
+                    else:
+                        corrected_RPC = RPC().from_file(
+                        args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_corrected.ikono",
+                        args.rpc_dir + "/" + name + "/" + id + ".IMD")
                 else:
-                    corrected_RPC = RPC().from_file(
+                    if USE_RPCM:
+                        corrected_RPC = rpcm.rpc_from_rpc_file(args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_original.ikono")
+                    else:
+                        corrected_RPC = RPC().from_file(
                         args.cache_dir + "/" + "rpc_" + a_sat_img.img_name + "_original.ikono",
                         args.rpc_dir + "/" + name + "/" + id + ".IMD")
                 a_sat_img.rpc = corrected_RPC
+                a_sat_img.rpcm_like = USE_RPCM
 
         bounds_LLA = pre_NeRF.find_bounds_sat_img(sat_img_list, (min_h, max_h)).T
         P_imgs = []

@@ -1,8 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import gdal
-from lego_rvl.rpc.rpc import RPC_py as RPC
+# from lego_rvl.rpc.rpc import RPC_py as RPC
 from .mg_time import mg_time
+import rpcm
 
 class sat_img:
     def __init__(self, img_loc, rpc_loc, file_name, has_rpc = False, end ='tif', load_IMD = False, IMD_loc = None, IMD_loc_full = None):
@@ -80,16 +81,23 @@ class sat_img:
         if has_rpc == False:
             self.rpc = None
             self.has_rpc = False
+            self.rpcm_like = False
         else:
             self.rpc = RPC.from_file(rpc_loc + "/" + file_name + ".RPB")
             self.has_rpc = True
+            self.rpcm_like = True
 
         self.shape = self.img.shape
         self.P_ready = False
 
-    def load_rpc_from_tif(self, img_loc):
+    def load_rpc_from_tif(self, img_loc, use_rpcm = True):
         # self.rpc = my_RPC.RPC_py.from_file(img_loc)
-        self.rpc = RPC.from_file(img_loc)
+        if use_rpcm:
+            self.rpc = rpcm.rpc_from_geotiff(img_loc)
+            self.rpcm_like = True
+        else:
+            self.rpc = RPC.from_file(img_loc)
+            self.rpcm_like = False
         self.has_rpc = True
 
     def get_vis_at_h(self, h):
@@ -103,13 +111,21 @@ class sat_img:
             exit()
             return -1, -1
         else:
-            return self.rpc.rpc(lat, lon, h)
+            if self.rpcm_like:
+                X, Y = self.rpc.projection(lon, lat, h)
+                return Y, X
+            else:
+                return self.rpc.rpc(lat, lon, h)
 
     def invert_rpc(self, row, col, h=0):
         if self.has_rpc == False:
             return -1, -1, -1
         else:
-            return self.rpc.inv_rpc(row, col, h)
+            if self.rpcm_like:
+                lon, lat = self.rpc.localization(col, row, h)
+                return lat, lon, h
+            else:
+                return self.rpc.inv_rpc(row, col, h)
 
     def apply_approx_RPC(self, lat, lon, h):
         if self.P_ready == True:
