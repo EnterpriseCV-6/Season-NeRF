@@ -10,20 +10,26 @@ import os
 def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use_prior = None, use_type_2_solar = None, use_solar = None):
     parser = argparse.ArgumentParser()
 
-    #Required Args for file locs.
-    parser.add_argument('--cache_dir', type=str, required=True,
-                        help='directory where cache for the current dataset is found')
+
+    parser.add_argument('--IO_Location', type=str, required=True,
+                        help="Location of files for input and output.")
     parser.add_argument('--site_name', type=str, required=True,
                         help="Name of site to run Season-NeRF on, ex JAX_068, OMA_084.")
-    parser.add_argument('--root_dir', type=str, required=True,
-                        help="Location of Images for site.")
-    parser.add_argument('--rpc_dir', type=str, required=True,
-                        help="Location of RPC files.")
     parser.add_argument('--exp_name', type=str, required=True,
                         help="Name of Experiment.")
-    parser.add_argument('--logs_dir', type=str, required=True,
+
+
+    #Overrides assumptions made by IO_Location argument.
+    #All are required args for file locs IF IO_Location IS NOT USED!!!.
+    parser.add_argument('--cache_dir', type=str, required=False,
+                        help='directory where cache for the current dataset is found')
+    parser.add_argument('--root_dir', type=str, required=False,
+                        help="Location of Images for site.")
+    parser.add_argument('--rpc_dir', type=str, required=False,
+                        help="Location of RPC files.")
+    parser.add_argument('--logs_dir', type=str, required=False,
                         help="Location to store Log outputs.")
-    parser.add_argument("--testing_image_names", type=str, required=True,
+    parser.add_argument("--testing_image_names", type=str, required=False,
                         help="Location of txt file containing name of testing images.")
 
     #Optional Training Modes:
@@ -119,6 +125,17 @@ def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use
 
     print(sys.argv)
     args = parser.parse_args()
+
+    if args.cache_dir is None:
+        args.cache_dir = args.IO_Location + "/Cache"
+    if args.root_dir is None:
+        args.root_dir = args.IO_Location + "/IEEE_Data/Images"
+    if args.rpc_dir is None:
+        args.rpc_dir = args.IO_Location + "/IEEE_Data/Track3-Metadata"
+    if args.logs_dir is None:
+        args.logs_dir = args.IO_Location + "/Logs"
+    if args.testing_image_names is None:
+        args.testing_image_names = args.IO_Location + "/Testing_Imgs"
 
     if args.gt_dir is None:
         args.gt_dir = args.root_dir

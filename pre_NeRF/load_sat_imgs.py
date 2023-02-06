@@ -27,3 +27,7 @@ def load_imgs_from_location_type_3(img_location, IMD_location, region_id, use_rp
             # exit()
 
     return img_list
+
+def download_img_data(img_location, rpc_location):
+    print(img_location)
+    print(rpc_location)
