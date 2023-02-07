@@ -2,6 +2,14 @@
 
 ## Quick Setup
 
+### Environment Setup
+To set up 'Season_NeRF` environment:
+
+    conda env create --name Season_NeRF --file Sesaon.yml
+    conda activate Season_NeRF
+    pip install git+https://github.com/jonbarron/robust_loss_pytorch
+
+
 ### Model Rendering
 Given a trained model, the following command will render an image.
 An already trained model for OMA 281 is available at LINK.
@@ -9,13 +17,6 @@ An already trained model for OMA 281 is available at LINK.
 To render a novel view, use the function
 ToDo
 
-
-### Environment Setup
-To set up 'Season_NeRF` environment:
-
-    conda env create --name Season_NeRF --file Sesaon.yml
-    conda activate Season_NeRF
-    pip install git+https://github.com/jonbarron/robust_loss_pytorch
 
 ### Data Setup Lite and Quick Start
 The full dataset requires ~22.5 GB of space.
