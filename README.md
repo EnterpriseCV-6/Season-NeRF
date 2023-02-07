@@ -1,6 +1,15 @@
 # Season-NeRF
 
 ## Quick Setup
+
+### Model Rendering
+Given a trained model, the following command will render an image.
+An already trained model for OMA 281 is available at LINK.
+
+To render a novel view, use the function
+ToDo
+
+
 ### Environment Setup
 To set up 'Season_NeRF` environment:
 
@@ -8,20 +17,33 @@ To set up 'Season_NeRF` environment:
     conda activate Season_NeRF
     pip install git+https://github.com/jonbarron/robust_loss_pytorch
 
-### Data Setup Lite
-The full dataset requires ~20 GB of space.
-This form of setup contains only NUMBER regions and requires ~NUMBER MB.
+### Data Setup Lite and Quick Start
+The full dataset requires ~22.5 GB of space.
+This form of setup contains only a single region and requires ~314 MB.
 
 To download and prepare the lite version of the data,
 
-1. ToDo
+1. Download and extract zip file from https://purdue0-my.sharepoint.com/:u:/g/personal/mgablema_purdue_edu/Eb4TMYwDVi9IjV_TV4Fo0_YB7K9kkp0lweWFLd2Khq1QjA?e=qAsmn7
+2. Run ``python main_lite.py --Season_NeRF_Outputs PATH/TO/FILE/Season_NeRF_Lite_Data``
 
-The regions contained in the lite dataset are
+This will train a model quicker but at a lower quality.
+To train a model using the recomended training settings, call
 
-1. ToDO
+``
+python main.py  --exp_name arg1 --IO_Location arg2 --site_name arg3
+``
 
-### Data Setup
+- arg1: Name of Experiment, data for output will be stored in arg2/Logs
+- arg2: PATH/TO/FILE/Season_NeRF_Lite_Data`
+- arg3: OMA_281
+
+however, this will take longer.
+Once training starts, progress can be viewed by running tensorboard --logdir PATH/TO/FILE/Season_NeRF_Lite_Data/Logs --port 6006 and following the link http://localhost:6006/#scalars
+
+
+### Data Setup Full
 The data used by Season-NeRF is available to download at https://ieee-dataport.org/open-access/data-fusion-contest-2019-dfc2019.
+This process will allow a Season NeRF to be built on any of the region in the from the data fusion contest.
 
 To download and prepare the data for Season-NeRF,
 
@@ -42,7 +64,7 @@ To download and prepare the data for Season-NeRF,
    
 If the data folder has been set up correctly, you should see the following message ``Finished setting up data!''.
 
-### Quick Run
+### Building Season NeRF
 After running the data setup, the following command can be used to train a Season NeRF.
 
 ``
@@ -57,11 +79,6 @@ Once training starts, progress can be viewed by running
 tensorboard --logdir arg2/Logs --port 6006
 ``
 and following the link http://localhost:6006/#scalars
-
-### Quick Model Rendering
-Given a trained model, the following command will start a GUI for rendering novel views and allow testing of the model.
-
-ToDo
 
 ## Advanced Running
 ### Useful Arguments
@@ -83,6 +100,3 @@ Overview of files in cache:
 - .ikono file: Contains original or corrected RPCs for the region (do not delete as they cannot be recovered without Lego pipeline)
 - Full_Scores_*.npy: Contains a summary of the accuracy of affine approximation to RPCs
 - SC_*.npy: Contains height map used to guide training (Takes a long time to build)
-
-### Log Information
-ToDo
