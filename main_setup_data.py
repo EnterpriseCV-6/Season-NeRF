@@ -67,10 +67,16 @@ def _main():
     os.rmdir(args.Season_NeRF_Outputs + "/IEEE_Data/Track3-RGB-2")
     os.rmdir(args.Season_NeRF_Outputs + "/IEEE_Data/Track3-Truth")
 
+    with zipfile.ZipFile(args.code_data_path + "/Data.zip", "r") as zip_ref:
+        print("Unzipping Data...")
+        zip_ref.extractall(args.code_data_path)
+        print("Done.")
 
     shutil.copytree(args.code_data_path + "/Data", args.Season_NeRF_Outputs + "/Cache")
 
     shutil.move(args.Season_NeRF_Outputs + "/Cache/Testing_Regions", args.Season_NeRF_Outputs + "/Testing_Imgs")
+
+    shutil.rmtree(args.code_data_path + "/Data")
 
 
     print("Finished setting up data!")
