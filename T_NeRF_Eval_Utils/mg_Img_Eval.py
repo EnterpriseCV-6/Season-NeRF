@@ -522,6 +522,10 @@ def image_quality_metric_gauntlet(Img_GT, Img_Est, SSIM_Scale, EM_Scale):
     # plt.imshow(Img_Est)
     # plt.show()
 
+    if np.all(Img_Est != Img_Est):
+        print("Warning: Invalid Image provided!")
+        return 1., 1., -1., 1.
+
     mask = np.all(Img_GT == Img_GT, 2) * np.all(Img_Est == Img_Est, 2)
 
     PSNR = mask_PSNR(Img_GT, Img_Est, mask)

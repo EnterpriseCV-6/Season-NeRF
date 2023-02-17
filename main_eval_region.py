@@ -47,13 +47,13 @@ def regional_eval(args, output_loc, quick_mode = True):
 
 
     print("Eval of Image Quality")
-
     if quick_mode:
         Img_Summary = evals.Full_Eval_Imgs(a_t_nerf, P_imgs, training_idx, testing_idx, device, season_steps=25,
                                            out_img_size=(256, 256, 96), solar_img_size=(64, 64, 96),
                                            include_training_imgs=False, use_classic_shadows=use_classic_solar)
     else:
         Img_Summary = evals.Full_Eval_Imgs(a_t_nerf, P_imgs, training_idx, testing_idx, device, season_steps= 100, out_img_size=(512,512,96), solar_img_size=(256,256,96), include_training_imgs=False, use_classic_shadows=use_classic_solar)
+
     fout = open(output_loc + "/Img_Summary.pickle", "wb")
     try:
         pickle.dump(Img_Summary, fout)

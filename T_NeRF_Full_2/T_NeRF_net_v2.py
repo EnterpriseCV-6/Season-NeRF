@@ -1,6 +1,6 @@
 import torch as t
 from misc import PE_Encode, Sine_Last, dumb_Encode
-from misc import SineLayer2 as SineLayer
+from misc import SineLayer as SineLayer
 from numpy import pi as PI
 import numpy as np
 from T_NeRF_Full_2.G_NeRF import G_NeRF_Net_Classic
@@ -22,7 +22,7 @@ class T_NeRF(t.nn.Module):
         super(T_NeRF, self).__init__()
         use_extended_encoding = True
 
-        use_SIREN2 = True
+        use_SIREN2 = False
 
         self.allow_other_temporal_adjust = False
         self.hm = t.tensor(HM, requires_grad=False)

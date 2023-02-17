@@ -23,6 +23,14 @@ def get_exp_name(input_dict, expanded_exp_name = ""):
     exp_name += expanded_exp_name
     return exp_name
 
+
+def write_W2C_W2L_H(file, a_P_img):
+    W2C = a_P_img.get_world_center()
+    W2L_H = a_P_img.S
+
+    vals = {"W2C":W2C, "W2L_H":W2L_H}
+    np.save(file, vals, allow_pickle=True)
+
 def run_test(args, eval_only):#run_test(input_dict, testing_region_name_list_loc = None, eval_only = False):
     # print("Running test...")
     device = t.device("cuda:0" if t.cuda.is_available() else "cpu")
@@ -48,6 +56,8 @@ def run_test(args, eval_only):#run_test(input_dict, testing_region_name_list_loc
     # fout.close()
 
     P_imgs, _ = run_pre_NeRF(args)
+
+    write_W2C_W2L_H(args.logs_dir + "/W2C_W2L_H.npy", P_imgs[0])
 
 
     if eval_only == False:

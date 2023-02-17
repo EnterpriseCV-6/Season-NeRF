@@ -61,7 +61,7 @@ class T_NeRF_Net_Tool(Net_tool):
         # exit()
 
     def reset_eval(self):
-        alphi_hi = 2.001 #2.99
+        alphi_hi = 2.99# 2.001
         scale_init = .03 #1.0
         if self.args.Use_MSE_loss:
             ada_loss = None

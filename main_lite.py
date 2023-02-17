@@ -1,11 +1,9 @@
-"""
-This script defines the input parameters that can be customized from the command line
-"""
-import sys
 import argparse
-import datetime
-import json
 import os
+import json
+import sys
+
+from main import run_test
 
 def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use_prior = None, use_type_2_solar = None, use_solar = None):
     parser = argparse.ArgumentParser()
@@ -13,9 +11,12 @@ def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use
 
     parser.add_argument('--IO_Location', type=str, required=True,
                         help="Location of files for input and output.")
-    parser.add_argument('--site_name', type=str, required=True,
+
+
+    #Args auto-filled in because of lite mode
+    parser.add_argument('--site_name', type=str, required=False, default="OMA_281",
                         help="Name of site to run Season-NeRF on, ex JAX_068, OMA_084.")
-    parser.add_argument('--exp_name', type=str, required=True,
+    parser.add_argument('--exp_name', type=str, required=False, default="OMA_281_Lite",
                         help="Name of Experiment.")
 
 
@@ -63,15 +64,15 @@ def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use
                         help='downscale factor for the training input images')
     parser.add_argument('--img_validation_downscale', type=int, default=8,
                         help='downscale factor for the testing images')
-    parser.add_argument('--max_train_steps', type=int, default=50000,
+    parser.add_argument('--max_train_steps', type=int, default=5000,
                         help='number of training iterations')
     parser.add_argument('--n_samples', type=int, default=96,
                         help='number of coarse scale discrete points per input ray')
-    parser.add_argument('--n_saves', type=int, default=75,
+    parser.add_argument('--n_saves', type=int, default=10,
                         help="Number of saves during training")
     parser.add_argument('--batch_size', type=int, default=512,
                         help='batch size (number of image rays per iteration, number of solar rays is always 2* number of image rays)')
-    parser.add_argument('--lr', type=float, default=(10 ** (-4.86)),
+    parser.add_argument('--lr', type=float, default=(10 ** (-4.86) * 3),
                         help='max learning rate')
     parser.add_argument('--lr_alpha_scale', type=float, default=1000,
                         help='Scale lr for alpha parameters.')
@@ -155,3 +156,16 @@ def get_opts(loaded_args = None, use_MSE_loss = None, num_time_class = None, use
         json.dump(vars(args), f, indent=2)
 
     return args
+
+
+
+
+
+def _main():
+    args = get_opts()
+    run_test(args, eval_only=False)
+
+
+
+if __name__ == '__main__':
+    _main()
