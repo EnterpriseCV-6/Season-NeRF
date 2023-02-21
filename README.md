@@ -12,7 +12,7 @@ To set up 'Season_NeRF` environment:
 
 ### Model Rendering
 Given a trained model, the following command will render an image.
-An already trained model for several regions is available at LINK.
+An already trained model for several regions is available at https://purdue0-my.sharepoint.com/:u:/g/personal/mgablema_purdue_edu/EVnwBTZY01hCpzQkMoCPkNIBUz8J59mDj6SxpCxPU8YVVw?e=8Tyf8U .
 
 To render a novel view, call
 
