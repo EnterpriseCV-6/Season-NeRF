@@ -1,5 +1,7 @@
 # Season-NeRF
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_gif.gif)
 
+This is a test to confirm I can add gifs to my readme file.
 ## Quick Setup
 
 ### Environment Setup
