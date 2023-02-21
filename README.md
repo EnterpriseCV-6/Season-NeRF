@@ -12,14 +12,20 @@ To set up 'Season_NeRF` environment:
 
 ### Model Rendering
 Given a trained model, the following command will render an image.
-An already trained model for OMA 281 is available at LINK.
+An already trained model for several regions is available at LINK.
 
-To render a novel view, use the function
-ToDo
+To render a novel view, call
 
+``
+python main_run_Season_NeRF.py --Model_Location arg1 --VA arg21 arg22 --SA arg31 arg32 --tf arg4
+``
+
+ - arg1: Folder conttaining Final_Model.nn and W2C_W2L_H.npy
+ - arg21, arg22: Viewing elevation and azmuth angle in degrees
+ - arg31, arg32: Solar elevation and azmuth angle in degrees
+ - arg4: Time of year MM/DD format ex: July 4 -> 07/04
 
 ### Data Setup Lite and Quick Start
-The full dataset requires ~22.5 GB of space.
 This form of setup contains only a single region and requires ~314 MB.
 
 To download and prepare the lite version of the data,
@@ -35,14 +41,15 @@ python main.py  --exp_name arg1 --IO_Location arg2 --site_name arg3
 ``
 
 - arg1: Name of Experiment, data for output will be stored in arg2/Logs
-- arg2: PATH/TO/FILE/Season_NeRF_Lite_Data`
+- arg2: PATH/TO/FILE/Season_NeRF_Lite_Data
 - arg3: OMA_281
 
 however, this will take longer.
 Once training starts, progress can be viewed by running tensorboard --logdir PATH/TO/FILE/Season_NeRF_Lite_Data/Logs --port 6006 and following the link http://localhost:6006/#scalars
 
 
-### Data Setup Full
+## Data Setup Full
+The full dataset requires ~22.5 GB of space.
 The data used by Season-NeRF is available to download at https://ieee-dataport.org/open-access/data-fusion-contest-2019-dfc2019.
 This process will allow a Season NeRF to be built on any of the region in the from the data fusion contest.
 
