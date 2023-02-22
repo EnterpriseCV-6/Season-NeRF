@@ -11,7 +11,7 @@ class G_NeRF_Net_Classic(t.nn.Module):
         self.ignore_hue = False
         self.use_norm = True
 
-        self.use_SIREN2 = True
+        self.use_SIREN2 = False
         if self.use_SIREN2:
             expand_size_pose = 0
             expand_size_solar_angle = 0
