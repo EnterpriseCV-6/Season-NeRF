@@ -1,7 +1,15 @@
 # Season-NeRF
-![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_gif.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_042.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_084.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_132.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_163.gif)
 
-This is a test to confirm I can add gifs to my readme file.
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_203.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_212.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_281.gif)
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_374.gif)
+
+Examples images rendered over a year using Season NeRF.
 ## Quick Setup
 
 ### Environment Setup
