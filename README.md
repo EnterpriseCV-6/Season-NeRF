@@ -10,6 +10,10 @@
 ![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/test_OMA_374.gif)
 
 Examples images rendered over a year using Season NeRF.
+
+![](https://github.com/EnterpriseCV-6/Season-NeRF/blob/main/Season_NeRF_Github_Media/OMA_281_crop.gif)
+
+Example of fixed time of year and changing viewing angle.
 ## Quick Setup
 
 ### Environment Setup
